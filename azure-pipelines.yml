@@ -1,9 +1,31 @@
 # Python package
+
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '3.x'
     addToPath: true
     architecture: 'x64'
+
+- task: Bash@3
+  inputs:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'iris_connection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az ml computetarget create amlcompute'
+    filePath: 'environment_setup/install-requirements.sh'
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'iris_connection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az execution'
+  inputs:
+    azureSubscription: 'iris_connection'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az execution create -g $(ml.resourcegroup) -w $(ml.workspace) -l $(ml.region) --exist -ok --yes'
 # Create and test a Python package on multiple Python versions.
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
